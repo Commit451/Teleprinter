@@ -19,7 +19,7 @@ allprojects {
 Then, add the library to your project `build.gradle`
 ```gradle
 dependencies {
-    compile 'com.github.Commit451:YouTubeExtractor:0.0.1'
+    compile 'com.github.Commit451:Teleprinter:0.0.1'
 }
 ```
 
