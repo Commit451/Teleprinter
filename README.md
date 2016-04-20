@@ -2,26 +2,7 @@
 Simple library to help with keyboard operations
 
 [![Build Status](https://travis-ci.org/Commit451/Teleprinter.svg?branch=master)](https://travis-ci.org/Commit451/Teleprinter)
-
-# Gradle Dependency
-
-Add this in your root `build.gradle` file (**not** your module `build.gradle` file):
-
-```gradle
-allprojects {
-	repositories {
-		...
-		maven { url "https://jitpack.io" }
-	}
-}
-```
-
-Then, add the library to your project `build.gradle`
-```gradle
-dependencies {
-    compile 'com.github.Commit451:Teleprinter:0.0.1'
-}
-```
+[![](https://jitpack.io/v/Commit451/Teleprinter.svg)](https://jitpack.io/#Commit451/Teleprinter)
 
 # Usage
 ```java
