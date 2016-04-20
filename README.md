@@ -1,9 +1,7 @@
 # YouTubeExtractor
-A helper to extract the streaming URL from a YouTube video
+Simple library to help with keyboard operations
 
-[![Build Status](https://travis-ci.org/Commit451/YouTubeExtractor.svg?branch=master)](https://travis-ci.org/Commit451/YouTubeExtractor)
-
-This library was originally found [here](https://github.com/flipstudio/YouTubeExtractor) in a project by [flipstudio](https://github.com/flipstudio). It has since been modified and cleaned up a bit to make it more user friendly.
+[![Build Status](https://travis-ci.org/Commit451/Teleprinter.svg?branch=master)](https://travis-ci.org/Commit451/Teleprinter)
 
 # Gradle Dependency
 
@@ -26,22 +24,12 @@ dependencies {
 ```
 
 # Usage
-This library is only responsible for getting the information needed from a YouTube video given its video id (which can be found in the url of any youtube video. It is not responsible for playback of the video. However, you can see in the sample app how this can be done using `MediaPlayer` and a `SurfaceView`
-Typical usage looks like this:
 ```java
-YouTubeExtractor extractor = new YouTubeExtractor(GRID_YOUTUBE_ID);
-    extractor.extract(new YouTubeExtractor.Callback() {
-        @Override
-        public void onSuccess(YouTubeExtractor.Result result) {
-            Uri hdUri = result.getHd1080VideoUri();
-            //See the sample for more
-        }
-
-        @Override
-        public void onFailure(Throwable t) {
-            t.printStackTrace();
-        }
-    });
+//this == activity
+mTeleprinter = new Teleprinter(this);
+mTeleprinter.hideKeyboard();
+//later...
+mTeleprinter.showKeyboard(edittext);
 ```
 
 License
