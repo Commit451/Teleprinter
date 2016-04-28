@@ -1,4 +1,4 @@
-# YouTubeExtractor
+# Teleprinter
 Simple library to help with keyboard operations
 
 [![Build Status](https://travis-ci.org/Commit451/Teleprinter.svg?branch=master)](https://travis-ci.org/Commit451/Teleprinter)
