@@ -13,10 +13,14 @@ mTeleprinter.hideKeyboard();
 mTeleprinter.showKeyboard(edittext);
 ```
 
+# Thanks
+Thanks to https://github.com/AzimoLabs/AndroidKeyboardWatcher for the reference on how to alert when the keyboard is hidden or showing.
+
 License
 --------
 
     Copyright 2016 Commit 451
+    Copyright 2016 Azimo
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
