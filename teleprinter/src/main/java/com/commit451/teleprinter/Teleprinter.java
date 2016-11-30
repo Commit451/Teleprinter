@@ -14,6 +14,7 @@ import java.util.ArrayList;
 /**
  * Teleprinter, like the old electromechanical typewriters. This class fills the holes of dealing
  * with Keyboard on Android
+ * @see <a href=https://en.wikipedia.org/wiki/Teleprinter>https://en.wikipedia.org/wiki/Teleprinter</a>
  */
 public class Teleprinter {
 
