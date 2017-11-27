@@ -1,26 +1,36 @@
 # Teleprinter
-Simple library to help with keyboard operations
+The missing Android keyboard API
 
 [![Build Status](https://travis-ci.org/Commit451/Teleprinter.svg?branch=master)](https://travis-ci.org/Commit451/Teleprinter)
 [![](https://jitpack.io/v/Commit451/Teleprinter.svg)](https://jitpack.io/#Commit451/Teleprinter)
 
 # Usage
-```java
-//this == activity
-mTeleprinter = new Teleprinter(this);
-mTeleprinter.hideKeyboard();
+```kotlin
+//this == AppCompatActivity
+val teleprinter = Teleprinter(this)
+teleprinter.showKeyboard(edittext)
 //later...
-mTeleprinter.showKeyboard(edittext);
+teleprinter.hideKeyboard()
 ```
-
-# Thanks
-Thanks to https://github.com/AzimoLabs/AndroidKeyboardWatcher for the reference on how to alert when the keyboard is hidden or showing.
+You can add listeners too:
+```kotlin
+teleprinter.addOnKeyboardOpenedListener {
+    Toast.makeText(this, "Keyboard opened", Toast.LENGTH_SHORT)
+            .show()
+}
+```
+and
+```kotlin
+teleprinter.addOnKeyboardClosedListener {
+    Toast.makeText(this, "Keyboard closed", Toast.LENGTH_SHORT)
+            .show()
+}
+```
 
 License
 --------
 
-    Copyright 2016 Commit 451
-    Copyright 2016 Azimo
+    Copyright 2017 Commit 451
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
