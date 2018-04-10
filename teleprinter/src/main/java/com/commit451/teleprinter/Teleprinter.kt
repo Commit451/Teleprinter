@@ -60,7 +60,7 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      * @return true if keyboard is show, false otherwise
      */
     fun showKeyboard(view: View): Boolean {
-        return inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        return inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 
     /**
