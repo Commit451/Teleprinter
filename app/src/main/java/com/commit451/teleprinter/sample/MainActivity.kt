@@ -43,5 +43,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, if (teleprinter.isKeyboardShowing()) "Yes" else "No", Toast.LENGTH_SHORT)
                     .show()
         }
+        //seems to need this delay
+        editText.postDelayed({
+            teleprinter.toggleKeyboard()
+        }, 200)
     }
 }

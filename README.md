@@ -11,6 +11,8 @@ val teleprinter = Teleprinter(this)
 teleprinter.showKeyboard(edittext)
 //later...
 teleprinter.hideKeyboard()
+//alternatively...
+teleprinter.toggleKeyboard()
 ```
 You can add listeners too:
 ```kotlin

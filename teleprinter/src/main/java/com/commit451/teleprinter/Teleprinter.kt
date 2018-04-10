@@ -64,6 +64,14 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
     }
 
     /**
+     * Toggle the keyboard
+     *
+     */
+    fun toggleKeyboard() {
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    /**
      * Is the keyboard currently showing?
      * @return true if showing, false if not
      */
