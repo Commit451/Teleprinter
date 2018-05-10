@@ -5,25 +5,25 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
+import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
-
 import java.lang.ref.WeakReference
-import android.graphics.Rect
 
 
 /**
  * Teleprinter, like the old electromechanical typewriters. This class fills the holes of dealing
  * with keyboards
  */
-class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
+class Teleprinter(activity: AppCompatActivity, private val observeOpenCloseEvents: Boolean = false) : LifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
         //TODO should this be adjusted depending on the density of the device?
-        private const val KEYBOARD_THRESHHOLD = 250 //px to consider keyboard opened
+        private const val KEYBOARD_THRESHOLD = 250 //px to consider keyboard opened
+        private const val NEEDED_DELAY = 100L
     }
 
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
@@ -35,8 +35,10 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
     private var isSoftKeyboardOpened: Boolean = false
 
     init {
-        viewWeakReference.get()?.viewTreeObserver?.addOnGlobalLayoutListener(this)
-        activity.lifecycle.addObserver(this)
+        if (observeOpenCloseEvents) {
+            viewWeakReference.get()?.viewTreeObserver?.addOnGlobalLayoutListener(this)
+            activity.lifecycle.addObserver(this)
+        }
     }
 
     /**
@@ -44,12 +46,12 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      *
      * @return true if the keyboard is successfully hidden, false otherwise
      */
-    fun hideKeyboard(): Boolean {
+    fun hideKeyboard(flags: Int = InputMethodManager.HIDE_IMPLICIT_ONLY): Boolean {
         val activity = activityWeakReference.get() ?: return false
         // Check if no view has focus:
         val view = activity.currentFocus
         return if (view != null) {
-            inputMethodManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, flags)
         } else false
     }
 
@@ -59,30 +61,41 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      * @param view the view to get focus
      * @return true if keyboard is show, false otherwise
      */
-    fun showKeyboard(view: View): Boolean {
-        return inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+    fun showKeyboard(view: View, flags: Int = InputMethodManager.SHOW_IMPLICIT): Boolean {
+        return inputMethodManager.showSoftInput(view, flags)
     }
 
     /**
-     * Toggle the keyboard
-     *
+     * Show the keyboard after its needed delay, specifically for usage when an activity is just created.
      */
-    fun toggleKeyboard() {
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    fun showKeyboardWithDelay(view: View, flags: Int = InputMethodManager.SHOW_IMPLICIT) {
+        view.postDelayed({
+            showKeyboard(view, flags)
+        }, NEEDED_DELAY)
+    }
+
+    /**
+     * Toggle the keyboard, which forces it to show without a reference to a view
+     */
+    fun toggleKeyboard(showFlags: Int = InputMethodManager.SHOW_IMPLICIT, hideFlags: Int = 0) {
+        inputMethodManager.toggleSoftInput(showFlags, hideFlags)
     }
 
     /**
      * Is the keyboard currently showing?
      * @return true if showing, false if not
      */
-    fun isKeyboardShowing(): Boolean = isSoftKeyboardOpened
+    fun isKeyboardShowing(): Boolean {
+        checkObserving()
+        return isSoftKeyboardOpened
+    }
 
     /**
-     * Listen for when the keyboard is opened. NOTE: this will only work if your [Activity]
-     * android:windowSoftInputMode="adjustResize"
+     * Listen for when the keyboard is opened.
      * @param listener the listener to register
      */
     fun addOnKeyboardOpenedListener(listener: OnKeyboardOpenedListener) {
+        checkObserving()
         onKeyboardOpenedListeners.add(listener)
     }
 
@@ -91,6 +104,7 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      * @param listener the listener to unregister
      */
     fun removeOnKeyboardOpenedListener(listener: OnKeyboardOpenedListener) {
+        checkObserving()
         onKeyboardOpenedListeners.remove(listener)
     }
 
@@ -100,6 +114,7 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      * @param listener the listener to register
      */
     fun addOnKeyboardClosedListener(listener: OnKeyboardClosedListener) {
+        checkObserving()
         onKeyboardClosedListeners.add(listener)
     }
 
@@ -108,6 +123,7 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
      * @param listener the listener to unregister
      */
     fun removeOnKeyboardClosedListener(listener: OnKeyboardClosedListener) {
+        checkObserving()
         onKeyboardClosedListeners.remove(listener)
     }
 
@@ -125,12 +141,18 @@ class Teleprinter(activity: AppCompatActivity) : LifecycleObserver, ViewTreeObse
         activityRootView.getWindowVisibleDisplayFrame(r)
 
         val heightDiff = activityRootView.rootView.height - (r.bottom - r.top)
-        if (!isSoftKeyboardOpened && heightDiff > KEYBOARD_THRESHHOLD) { // if more than 100 pixels, its probably a keyboard...
+        if (!isSoftKeyboardOpened && heightDiff > KEYBOARD_THRESHOLD) { // if more than 100 pixels, its probably a keyboard...
             isSoftKeyboardOpened = true
             onKeyboardOpenedListeners.forEach { it.invoke(heightDiff) }
-        } else if (isSoftKeyboardOpened && heightDiff < KEYBOARD_THRESHHOLD) {
+        } else if (isSoftKeyboardOpened && heightDiff < KEYBOARD_THRESHOLD) {
             isSoftKeyboardOpened = false
             onKeyboardClosedListeners.forEach { it.invoke() }
+        }
+    }
+
+    private fun checkObserving() {
+        if (!observeOpenCloseEvents) {
+            throw IllegalStateException("You are not observing open/close events. Change your constructor of Teleprinter to be Teleprinter(activity, true)")
         }
     }
 }
