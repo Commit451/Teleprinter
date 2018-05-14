@@ -46,7 +46,7 @@ class Teleprinter(activity: AppCompatActivity, private val observeOpenCloseEvent
      *
      * @return true if the keyboard is successfully hidden, false otherwise
      */
-    fun hideKeyboard(flags: Int = InputMethodManager.HIDE_IMPLICIT_ONLY): Boolean {
+    fun hideKeyboard(flags: Int = 0): Boolean {
         val activity = activityWeakReference.get() ?: return false
         // Check if no view has focus:
         val view = activity.currentFocus
