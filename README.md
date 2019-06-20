@@ -4,7 +4,7 @@ The missing Android keyboard API
 [![Build Status](https://travis-ci.org/Commit451/Teleprinter.svg?branch=master)](https://travis-ci.org/Commit451/Teleprinter)
 [![](https://jitpack.io/v/Commit451/Teleprinter.svg)](https://jitpack.io/#Commit451/Teleprinter)
 
-# Usage
+## Usage
 ```kotlin
 //this == AppCompatActivity
 val teleprinter = Teleprinter(this)
@@ -29,10 +29,24 @@ teleprinter.addOnKeyboardClosedListener {
 }
 ```
 
+## Dependency
+```
+allprojects {
+   repositories {
+      ...
+      maven { url 'https://jitpack.io' }
+	}
+}
+```
+then: 
+```
+implementation("com.github.Commit451:Teleprinter:2.2.0")
+```
+
 License
 --------
 
-    Copyright 2018 Commit 451
+    Copyright 2019 Commit 451
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
