@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.button_show).setOnClickListener { teleprinter.showKeyboard(editText) }
         findViewById<View>(R.id.button_hide).setOnClickListener { teleprinter.hideKeyboard() }
         findViewById<View>(R.id.button_is_keyboard_showing).setOnClickListener {
-            Toast.makeText(this, if (teleprinter.isKeyboardShowing()) "Yes" else "No", Toast.LENGTH_SHORT)
+            Toast.makeText(this, if (teleprinter.isKeyboardVisible()) "Yes" else "No", Toast.LENGTH_SHORT)
                     .show()
         }
 

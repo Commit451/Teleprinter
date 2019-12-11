@@ -42,6 +42,21 @@ then:
 ```
 implementation("com.github.Commit451:Teleprinter:2.2.0")
 ```
+Teleprinter also requires Java 8 bytecode. To enable, add the following to your build.gradle:
+```
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+```
 
 ## Note
 It is worth noting that this library is a "hack" around a lack of an official keyboard API from Google,

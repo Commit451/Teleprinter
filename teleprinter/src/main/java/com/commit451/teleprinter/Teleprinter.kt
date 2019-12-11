@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.commit451.teleprinter
 
 import android.app.Activity
@@ -10,20 +8,19 @@ import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import java.lang.ref.WeakReference
-
 
 /**
  * Teleprinter, like the old electromechanical typewriters. This class fills the holes of dealing
  * with the keyboard API
  */
+@Suppress("unused")
 class Teleprinter(
     activity: AppCompatActivity,
     private val observeOpenCloseEvents: Boolean = false
-) : LifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
+) : DefaultLifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
         private const val NEEDED_DELAY = 100L
@@ -32,8 +29,8 @@ class Teleprinter(
     private val activityWeakReference: WeakReference<Activity> = WeakReference(activity)
     private val viewWeakReference: WeakReference<View> = WeakReference(activity.findViewById(Window.ID_ANDROID_CONTENT))
     private val inputMethodManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    private val onKeyboardOpenedListeners by lazy { mutableListOf<OnKeyboardOpenedListener>() }
-    private val onKeyboardClosedListeners by lazy { mutableListOf<OnKeyboardClosedListener>() }
+    private val onKeyboardOpenedListeners = mutableListOf<OnKeyboardOpenedListener>()
+    private val onKeyboardClosedListeners = mutableListOf<OnKeyboardClosedListener>()
     /**
      * Amount of px to consider keyboard opened
      */
@@ -89,10 +86,10 @@ class Teleprinter(
     }
 
     /**
-     * Is the keyboard currently showing?
-     * @return true if showing, false if not
+     * Is the keyboard currently visible?
+     * @return true if visible, false if not
      */
-    fun isKeyboardShowing(): Boolean {
+    fun isKeyboardVisible(): Boolean {
         checkObserving()
         return isSoftKeyboardOpened
     }
@@ -134,8 +131,8 @@ class Teleprinter(
         onKeyboardClosedListeners.remove(listener)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    private fun onDestroy() {
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
         viewWeakReference.get()?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
         onKeyboardOpenedListeners.clear()
         onKeyboardClosedListeners.clear()
