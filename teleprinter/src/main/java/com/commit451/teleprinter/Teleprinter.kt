@@ -18,13 +18,14 @@ import java.lang.ref.WeakReference
 
 /**
  * Teleprinter, like the old electromechanical typewriters. This class fills the holes of dealing
- * with keyboards
+ * with the keyboard API
  */
-class Teleprinter(activity: AppCompatActivity, private val observeOpenCloseEvents: Boolean = false) : LifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
+class Teleprinter(
+    activity: AppCompatActivity,
+    private val observeOpenCloseEvents: Boolean = false
+) : LifecycleObserver, ViewTreeObserver.OnGlobalLayoutListener {
 
     companion object {
-        //TODO should this be adjusted depending on the density of the device?
-        private const val KEYBOARD_THRESHOLD = 250 //px to consider keyboard opened
         private const val NEEDED_DELAY = 100L
     }
 
@@ -33,6 +34,10 @@ class Teleprinter(activity: AppCompatActivity, private val observeOpenCloseEvent
     private val inputMethodManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private val onKeyboardOpenedListeners by lazy { mutableListOf<OnKeyboardOpenedListener>() }
     private val onKeyboardClosedListeners by lazy { mutableListOf<OnKeyboardClosedListener>() }
+    /**
+     * Amount of px to consider keyboard opened
+     */
+    private val keyboardThreshold = activity.resources.getDimensionPixelSize(R.dimen.teleprinter_keyboard_threshold)
 
     private var isSoftKeyboardOpened: Boolean = false
 
@@ -143,10 +148,10 @@ class Teleprinter(activity: AppCompatActivity, private val observeOpenCloseEvent
         activityRootView.getWindowVisibleDisplayFrame(r)
 
         val heightDiff = activityRootView.rootView.height - (r.bottom - r.top)
-        if (!isSoftKeyboardOpened && heightDiff > KEYBOARD_THRESHOLD) { // if more than 100 pixels, its probably a keyboard...
+        if (!isSoftKeyboardOpened && heightDiff > keyboardThreshold) { // if more than threshold pixels, its probably a keyboard...
             isSoftKeyboardOpened = true
             onKeyboardOpenedListeners.forEach { it.invoke(heightDiff) }
-        } else if (isSoftKeyboardOpened && heightDiff < KEYBOARD_THRESHOLD) {
+        } else if (isSoftKeyboardOpened && heightDiff < keyboardThreshold) {
             isSoftKeyboardOpened = false
             onKeyboardClosedListeners.forEach { it.invoke() }
         }

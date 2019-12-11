@@ -43,6 +43,12 @@ then:
 implementation("com.github.Commit451:Teleprinter:2.2.0")
 ```
 
+## Note
+It is worth noting that this library is a "hack" around a lack of an official keyboard API from Google,
+therefore it is potentially breakable with each Android version, and does not work with certain keyboard
+configurations, such as "floating keyboards" or very small keyboards, or even hardware keyboards. Keep
+these things in mind when using this library.
+
 License
 --------
 
